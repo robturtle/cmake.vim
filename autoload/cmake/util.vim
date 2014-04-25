@@ -135,6 +135,13 @@ endfunc
 func! cmake#util#apply_makeprg()
   " TODO Take a copy of the old 'makeprg' and place it in 'g:oldmakeprg'
   if g:cmake_set_makeprg == 1 && cmake#util#has_project() == 1
-    let &makeprg="make -C " . cmake#util#binary_dir()
+    let l:b_dir = cmake#util#binary_dir()
+    if l:b_dir != "0"
+      let &makeprg="make -C " . l:b_dir
+    elseif &ft == "c"
+      let &makeprg="cc\ -Wall\ -Wextra\ -g\ -O0\ -o\ %<.elf\ %"
+    elseif &ft == "cpp"
+      let &makeprg="cxx\ -Wall\ -extra\ -g\ -O0\ -o\ %<.elf\ %"
+    endif
   endif
 endfunc
